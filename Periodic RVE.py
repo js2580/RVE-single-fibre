@@ -180,8 +180,8 @@ mdb.Job(name='RVE_single_fibre', model='Model-1', description='',
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
 
 ###################### PBC Surface Set ##########################
-
-from Find_opposite_nodes import *
+from Python-scripts.Find_opposite_nodes import *
+#from Find_opposite_nodes import *
 
 p = mdb.models['Model-1'].parts['Union_part']
 nodeLabels = tuple(TopS)
