@@ -8,4 +8,4 @@ Write_PBC_input.py ---> Generate a text file writing linear equations of each pa
 
 Write_Disp_boundary.py ---> Generate a text file writing a displacement boundary of a reference point
 
-Post-processing_Homogenisation.py ---> Calcualte homogenisation modulies
+Post-processing_Homogenisation.py ---> Calcualte homogenisation moduli
