@@ -1,3 +1,15 @@
+*.txt
+*.log
+*.rpy
+*.com
+*.msg
+*.dat
+*.odb
+*.inp
+*.prt
+*.sim
+*.sta
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
