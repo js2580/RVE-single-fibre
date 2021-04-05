@@ -1,0 +1,6 @@
+** 
+** BOUNDARY CONDITIONS 
+** 
+*Boundary
+RP6, 2, 2, 0.008
+RP5, 1, 1, 0.008
