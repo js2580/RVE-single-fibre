@@ -33,10 +33,11 @@ if E2 == True:
 if E3 == True:
     DispBoundary = open('Disp_Boundary_case3.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
+    DispBoundary.write('*Boundary\n')
     DispBoundary.write('RP5, 2, 2, ' + str(Disp) + '\n')
     DOF1 = True
-    DOF2 = False
-    DOF3 = False
+    DOF2 = True
+    DOF3 = True
     DispBoundary.close()
 
 
@@ -44,8 +45,8 @@ if G1 == True:  #epsilon_xy
     DispBoundary = open('Disp_Boundary_case4.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
     DispBoundary.write('*Boundary\n')
-    DispBoundary.write('RP6, 3, 3, ' + str(Disp) + '\n')
-    DispBoundary.write('RP4, 1, 1, ' + str(Disp) + '\n')
+    DispBoundary.write('RP6, 2, 2, ' + str(Disp) + '\n')
+    DispBoundary.write('RP5, 1, 1, ' + str(Disp) + '\n')
     DOF1 = True
     DOF2 = True
     DOF3 = True
@@ -56,8 +57,8 @@ if G2 == True:  #epsilon_xz
     DispBoundary = open('Disp_Boundary_case5.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
     DispBoundary.write('*Boundary\n')
-    DispBoundary.write('RP6, 2, 2, ' + str(Disp) + '\n')
-    DispBoundary.write('RP5, 1, 1, ' + str(Disp) + '\n')
+    DispBoundary.write('RP4, 1, 1, ' + str(Disp) + '\n')
+    DispBoundary.write('RP6, 3, 3, ' + str(Disp) + '\n')
     DOF1 = True
     DOF2 = True
     DOF3 = True
@@ -71,8 +72,8 @@ if G3 == True:  #epsilon_yz
     DispBoundary = open('Disp_Boundary_case6.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
     DispBoundary.write('*Boundary\n')
-    DispBoundary.write('RP5, 3, 3, ' + str(Disp) + '\n')
     DispBoundary.write('RP4, 2, 2, ' + str(Disp) + '\n')
+    DispBoundary.write('RP5, 3, 3, ' + str(Disp) + '\n')
     DOF1 = True
     DOF2 = True
     DOF3 = True
