@@ -162,7 +162,7 @@ mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial',
 
 mdb.models['Model-1'].fieldOutputRequests['F-Output-1'].setValues(
     variables=('S', 'PE', 'PEEQ', 'PEMAG', 'LE', 'U', 'RF', 'CF', 'CSTRESS', 
-    'CDISP', 'IVOL'))
+    'CDISP', 'IVOL','ENER'))
 
 ###################### Create inp file ##########################
 
@@ -180,8 +180,7 @@ mdb.Job(name='RVE_single_fibre', model='Model-1', description='',
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
 
 ###################### PBC Surface Set ##########################
-from Python-scripts.Find_opposite_nodes import *
-#from Find_opposite_nodes import *
+from Find_opposite_nodes import *
 
 p = mdb.models['Model-1'].parts['Union_part']
 nodeLabels = tuple(TopS)
@@ -352,9 +351,27 @@ for i in SurfaceNode:
 
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
 
-###################### E11, E22, E33 ##########################
-
-mdb.Model(name='E11,E22,E33', objectToCopy=mdb.models['Model-1'])
+###################### Generate new .inp file with PBC and Disp_boundary included ##########################
 
 
+Inputfile = open("RVE_single_fibre.inp",'r')
+rawdata = Inputfile.read()
+Inputfile.close()
+data = rawdata.split('\n')
+end_assembly_index = data.index('*End Assembly')
+output_field_index = data.index('** OUTPUT REQUESTS')
 
+writefile = open("PBC_RVE_single_fibre.inp",'w')
+for i in range (0,len(data)):
+    if i == end_assembly_index:
+        writefile.write("*INCLUDE, INPUT=PBC_input.txt \n")
+        writefile.write(data[i] + "\n")
+    elif i == output_field_index:
+        writefile.write("*INCLUDE, INPUT=Disp_Boundary.txt \n")
+        writefile.write(data[i] + "\n")
+    else:
+        writefile.write(data[i] + "\n")
+
+writefile.close()
+
+# abaqus job=pbc_rve_single_fibre.inp

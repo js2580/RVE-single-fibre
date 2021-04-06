@@ -5,7 +5,7 @@ from Write_Disp_Boundary import *
 
 Disp = 0.008         #extrude_dept
 
-writeinput = open('PBC_input_E.txt','w')
+writeinput = open('PBC_input.txt','w')
 
 # writeinput.write('*Nset, nset="_T-Datum csys-1", internal\n')
 # for i in SurfaceNode:
@@ -492,7 +492,7 @@ for i in range (0,len(var1)):
 writeinput.close()
 
 #Inputfile = open("RVE_single_fibre.inp",'a')
-#Inputfile.write('*INCLUDE, INPUT=PBC_input_E.txt')
+#Inputfile.write('*INCLUDE, INPUT=PBC_input.txt')
 
 #total_eq = (len(pairTB) + len(pairLR) + len(pairFB) + len(EdgeSet1) + len(EdgeSet2) + len(EdgeSet3) + len(EdgeSet4) + len(EdgeSet5) + len(EdgeSet6) + 4)*3
 #print(total_eq)

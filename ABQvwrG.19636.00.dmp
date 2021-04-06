@@ -1,0 +1,31 @@
+<Description>
+    ABQvwrG.exe / rank 0 / thread 0  encountered an unhandled exception
+ (code 2745)
+
+</Description>
+
+<Callstack>
+KERNELBASE.dll                 RaiseException                
+VCRUNTIME140.dll               is_exception_typeof           
+ntdll.dll                      RtlCaptureContext2            
+ABQSMAInbVwrIPC.dll            ipc_Client::ReceiveReply      
+ABQSMAInbVwrIPC.dll            ipc_Client::SendRequest       
+ABQSMAIngVwrGui.dll            mdmG_KerClientBase::HandleDirectManipulationRequest
+ABQSMAIngVwrGui.dll            oslG_DirectManipulationProxy::SendSyncDirectManipInfo
+ABQSMAIngVwrGui.dll            oslG_DirectManipulationClient::SendSyncDirectManipInfo
+ABQSMAIngVwrGui.dll            oslG_DirectManipulationProxy::HandleMotionEvent
+ABQSMAIngVwrGui.dll            mdmG_Manipulator::InputCB     
+ABQSMAIngVwrGui.dll            cnvG_Viewport::onMotion       
+ABQSMAIngVwrGui.dll            cnvG_Viewport::handle         
+ABQSMAFoxFoxAPI.dll            FXApp::dispatchEvent          
+ABQSMAFoxFoxAPI.dll            FXApp::wndproc                
+USER32.dll                     CallWindowProcW               
+USER32.dll                     DispatchMessageW              
+ABQSMAFoxFoxAPI.dll            FXApp::dispatchEvent          
+ABQSMAFoxFoxAPI.dll            FXApp::run                    
+ABQvwrG.exe                   ???
+ABQvwrG.exe                   ???
+ABQvwrG.exe                   ???
+KERNEL32.DLL                   BaseThreadInitThunk           
+ntdll.dll                      RtlUserThreadStart            
+</Callstack>

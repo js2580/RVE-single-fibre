@@ -1,0 +1,48 @@
+<Description>
+   ***  ABAQUS/ABQcaeG rank 0 received the SIGABRT signal
+</Description>
+
+<Context>
+   UNKNOWN
+</Context>
+
+<Callstack>
+  1)  ucrtbase.dll                abort                                   
+  2)  ucrtbase.dll                terminate                               
+  3)  VCRUNTIME140.dll            is_exception_typeof                     
+  4)  VCRUNTIME140.dll            is_exception_typeof                     
+  5)  VCRUNTIME140.dll            _CxxFrameHandler3                       
+  6)  ntdll.dll                   RtlRaiseException                       
+  7)  ntdll.dll                   RtlRaiseException                       
+  8)  KERNELBASE.dll              RaiseException                          
+  9)  VCRUNTIME140.dll            CxxThrowException                       
+ 10)  ABQSMAInbVwrIPC.dll         ipc_Socket::Close                       
+ 11)  ABQSMAInbVwrIPC.dll         ipc_Monitor::~ipc_Monitor               
+ 12)  ABQSMAInbVwrIPC.dll         SMAInbIpc_finalize                      
+ 13)  ABQSMAInbVwrIPC.dll         DllMain                                 
+ 14)  ABQSMAInbVwrIPC.dll         SMAInbVwrIPC_initializeC                
+ 15)  ntdll.dll                   RtlActivateActivationContextUnsafeFast  
+ 16)  ntdll.dll                   LdrShutdownProcess                      
+ 17)  ntdll.dll                   RtlExitUserProcess                      
+ 18)  KERNEL32.DLL                FatalExit                               
+ 19)  ucrtbase.dll                exit                                    
+ 20)  ucrtbase.dll                exit                                    
+</Callstack>
+
+<Memory>
+   <Current>             110 MB </Current>
+   <Resident>            166 MB </Resident>
+   <Physical>          16164 MB </Physical>
+   <Limit>                 0 MB </Limit>
+   <Accessible>        16164 MB </Accessible>
+   <Allocator>            DL    </Allocator>
+</Memory>
+
+<Directories>
+  <current> C:\RVE-single-fibre            </current> 
+     <temp> C:\Users\js2580\AppData\Local\Temp </temp>
+</Directories>
+
+<Installation>
+</Installation>
+

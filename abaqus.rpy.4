@@ -1,0 +1,57 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/Viewer Release 2020 replay file
+# Internal Version: 2019_09_13-18.49.31 163176
+# Run by js2580 on Tue Apr  6 11:51:04 2021
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=149.865615844727, 
+    height=33.4370384216309)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from viewerModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+o2 = session.openOdb(name='pbc_rve_single_fibre.odb')
+#: Model: C:/RVE-single-fibre/pbc_rve_single_fibre.odb
+#: Number of Assemblies:         1
+#: Number of Assembly instances: 0
+#: Number of Part instances:     1
+#: Number of Meshes:             2
+#: Number of Element Sets:       3
+#: Number of Node Sets:          1662
+#: Number of Steps:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o2)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='IVOL', outputPosition=INTEGRATION_POINT, )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='S', outputPosition=INTEGRATION_POINT, refinement=(INVARIANT, 
+    'Mises'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].view.setValues(session.views['Front'])
+session.viewports['Viewport: 1'].view.setValues(width=0.0303046, 
+    height=0.0133066, viewOffsetX=8.39203e-05, viewOffsetY=-9.31075e-06)
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U1'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U2'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U3'), )
+session.viewports['Viewport: 1'].view.setValues(nearPlane=0.0328917, 
+    farPlane=0.0486648, width=0.0287904, height=0.0126417, 
+    viewOffsetX=8.1942e-05, viewOffsetY=-1.54797e-05)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=0.0288322, 
+    farPlane=0.0526502, width=0.0252371, height=0.0110815, cameraPosition=(
+    -0.0100307, 0.0253576, 0.0343026), cameraUpVector=(0.225139, 0.783559, 
+    -0.579093), cameraTarget=(5.19681e-05, 4.07393e-05, 0.00396684), 
+    viewOffsetX=7.18286e-05, viewOffsetY=-1.35692e-05)

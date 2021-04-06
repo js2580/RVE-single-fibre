@@ -1,0 +1,53 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/Viewer Release 2020 replay file
+# Internal Version: 2019_09_13-18.49.31 163176
+# Run by js2580 on Tue Apr  6 11:58:15 2021
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+#: Warning: Permission was denied for "abaqus.rpy"; "abaqus.rpy.5" will be used for this session's replay file.
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=149.865615844727, 
+    height=33.4370384216309)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from viewerModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+o2 = session.openOdb(name='pbc_rve_single_fibre.odb')
+#: Model: C:/RVE-single-fibre/pbc_rve_single_fibre.odb
+#: Number of Assemblies:         1
+#: Number of Assembly instances: 0
+#: Number of Part instances:     1
+#: Number of Meshes:             2
+#: Number of Element Sets:       3
+#: Number of Node Sets:          1662
+#: Number of Steps:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o2)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+cliCommand("""step1 = odb.steps.values()[0]""")
+#* NameError: name 'odb' is not defined
+cliCommand("""odb = openOdb(path='PBC_RVE_single_fibre.odb') """)
+#* NameError: name 'openOdb' is not defined
+cliCommand("""odb = openOdb(path='PBC_RVE_single_fibre.odb') """)
+#* NameError: name 'openOdb' is not defined
+cliCommand("""from odbAccess import *""")
+cliCommand("""from abaqusConstants import *""")
+cliCommand("""import sys""")
+cliCommand("""#Open the output data""")
+cliCommand("""#change path according to the file directory""")
+cliCommand("""odb = openOdb(path='PBC_RVE_single_fibre.odb') """)
+#: Warning: An output database lock file C:\RVE-single-fibre\PBC_RVE_single_fibre.lck has been detected. This may indicate that the output database is opened for writing by another application.
+#: C:/RVE-single-fibre/PBC_RVE_single_fibre.odb will be opened read-only. 
+#* OdbError: Cannot open file C:/RVE-single-fibre/PBC_RVE_single_fibre.odb. *** 
+#* Error: File open failed (utl_File: CreateFile in OpenUpdate)
+#* error: The process cannot access the file because it is being used by 
+#* another process.
+#* 
+#* file: C:/RVE-single-fibre/PBC_RVE_single_fibre.odb
