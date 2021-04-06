@@ -21357,7 +21357,7 @@ coord3D, coord3D
 ** 
 *Step, name=Step-1, nlgeom=YES, inc=1000
 *Static, stabilize=0.0002, allsdtol=0.05, continue=NO
-0.1, 1., 1e-15, 0.1
+0.1, 1., 1e-05, 0.1
 ** 
 ** OUTPUT REQUESTS
 ** 

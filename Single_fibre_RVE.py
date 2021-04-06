@@ -3,6 +3,8 @@ from abaqusConstants import *
 from caeModules import *
 from driverUtils import executeOnCaeStartup
 
+#abaqus cae -noGUI Single_fibre_RVE.py.py
+
 
 
 fibre_diametre = 0.0062 #mm #(7 micron)
@@ -156,7 +158,7 @@ mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial',
     maxNumInc=1000, stabilizationMagnitude=0.0002, 
     stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
     continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
-    minInc=1e-15, maxInc=0.1, nlgeom=ON)
+    minInc=1e-5, maxInc=0.1, nlgeom=ON)
 
 ###################### Output History ##########################
 
@@ -351,27 +353,35 @@ for i in SurfaceNode:
 
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
 
-###################### Generate new .inp file with PBC and Disp_boundary included ##########################
+
+##################### Function Generate new .inp file with PBC and Disp_boundary included ##########################
+def generate_input_file(name):
+    Inputfile = open("RVE_single_fibre.inp",'r')
+    rawdata = Inputfile.read()
+    Inputfile.close()
+    data = rawdata.split('\n')
+    end_assembly_index = data.index('*End Assembly')
+    output_field_index = data.index('** OUTPUT REQUESTS')
+    #######################################################
+    writefile = open("PBC_RVE_single_fibre_" + name + ".inp",'w')
+    for i in range (0,len(data)):
+        if i == end_assembly_index:
+            writefile.write("*INCLUDE, INPUT=PBC_input.txt \n")
+            writefile.write(data[i] + "\n")
+        elif i == output_field_index:
+            writefile.write("*INCLUDE, INPUT=Disp_Boundary_" + name + ".txt \n")
+            writefile.write(data[i] + "\n") 
+        else:
+            writefile.write(data[i] + "\n")
+    writefile.close()
 
 
-Inputfile = open("RVE_single_fibre.inp",'r')
-rawdata = Inputfile.read()
-Inputfile.close()
-data = rawdata.split('\n')
-end_assembly_index = data.index('*End Assembly')
-output_field_index = data.index('** OUTPUT REQUESTS')
+###################### Generate new input files with different boundary conditions ##########################
+for i in range (1,7):
+    generate_input_file("case" + str(i))
 
-writefile = open("PBC_RVE_single_fibre.inp",'w')
-for i in range (0,len(data)):
-    if i == end_assembly_index:
-        writefile.write("*INCLUDE, INPUT=PBC_input.txt \n")
-        writefile.write(data[i] + "\n")
-    elif i == output_field_index:
-        writefile.write("*INCLUDE, INPUT=Disp_Boundary.txt \n")
-        writefile.write(data[i] + "\n")
-    else:
-        writefile.write(data[i] + "\n")
 
-writefile.close()
 
-# abaqus job=pbc_rve_single_fibre.inp
+
+
+

@@ -4,7 +4,7 @@ import sys
 
 #Open the output data
 #change path according to the file directory
-odb = openOdb(path='PBC_RVE_single_fibre.odb') 
+odb = openOdb(path='PBC_RVE_single_fibre_case1.odb') 
 myAssembly = odb.rootAssembly
 elementType = ['C3D8','C3D6']
 #Choose loading type 
@@ -57,7 +57,7 @@ for loadtype in loadlist:
                                                   
 
 output_file = open('homogenised_stress_output.txt','w')
-output_file.write('Macro-Stress \t Macro-Strain \t Stiffness matrix')
+output_file.write('Macro-Stress \t Macro-Strain \t Stiffness matrix \n')
 for i in loadlist:
     output_file.write('%16.8E \t' % (list_macroscopic_stress[i]))
     output_file.write('%16.8E \t' % (list_macroscopic_strain[i]))
