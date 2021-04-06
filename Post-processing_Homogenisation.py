@@ -67,7 +67,7 @@ def compute_stiffness(name):
 
     output_file.close()
 
-for case in range(1,7):
+for case in range(1,10):
     compute_stiffness(str(case))
 
 

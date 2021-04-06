@@ -3,7 +3,7 @@ from abaqusConstants import *
 from caeModules import *
 from driverUtils import executeOnCaeStartup
 
-#abaqus cae -noGUI Single_fibre_RVE.py.py
+#abaqus cae -noGUI Single_fibre_RVE.py
 
 
 
@@ -377,7 +377,7 @@ def generate_input_file(name):
 
 
 ###################### Generate new input files with different boundary conditions ##########################
-for i in range (1,7):
+for i in range (1,10):
     generate_input_file("case" + str(i))
 
 
