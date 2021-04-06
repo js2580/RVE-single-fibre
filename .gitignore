@@ -9,6 +9,7 @@ __pycache__/
 *.txt
 *.log
 *.rpy
+*.rpy.*
 *.com
 *.msg
 *.dat
@@ -18,6 +19,10 @@ __pycache__/
 *.sim
 *.sta
 *.rec
+*.7
+*.dmp
+*.exception
+
 
 # C extensions
 *.so
