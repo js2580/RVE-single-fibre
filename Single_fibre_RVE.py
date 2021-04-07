@@ -110,15 +110,15 @@ p.SectionAssignment(region=region, sectionName='Matrix section', offset=0.0,
 
 ###################### Assign Material orientation ##########################
 
-p = mdb.models['Model-1'].parts['Union_part']
-region = p.sets['Fibre cell']
-mdb.models['Model-1'].parts['Union_part'].MaterialOrientation(region=region, 
-    orientationType=DISCRETE, axis=AXIS_3, normalAxisDefinition=VECTOR, 
-    normalAxisVector=(0.0, 1.0, 0.0), flipNormalDirection=False, 
-    normalAxisDirection=AXIS_3, primaryAxisDefinition=VECTOR, 
-    primaryAxisVector=(0.0, 0.0, 1.0), primaryAxisDirection=AXIS_1, 
-    flipPrimaryDirection=False, additionalRotationType=ROTATION_NONE, 
-    angle=0.0, additionalRotationField='', stackDirection=STACK_3)
+# p = mdb.models['Model-1'].parts['Union_part']
+# region = p.sets['Fibre cell']
+# mdb.models['Model-1'].parts['Union_part'].MaterialOrientation(region=region, 
+#     orientationType=DISCRETE, axis=AXIS_3, normalAxisDefinition=VECTOR, 
+#     normalAxisVector=(0.0, 1.0, 0.0), flipNormalDirection=False, 
+#     normalAxisDirection=AXIS_3, primaryAxisDefinition=VECTOR, 
+#     primaryAxisVector=(0.0, 0.0, 1.0), primaryAxisDirection=AXIS_1, 
+#     flipPrimaryDirection=False, additionalRotationType=ROTATION_NONE, 
+#     angle=0.0, additionalRotationField='', stackDirection=STACK_3)
 
 ###################### Assign Mesh ##########################
 
@@ -158,7 +158,8 @@ mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial',
     maxNumInc=1000, stabilizationMagnitude=0.0002, 
     stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
     continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
-    minInc=1e-5, maxInc=0.1, nlgeom=ON)
+    minInc=1e-5, maxInc=0.1, nlgeom=ON
+    )
 
 ###################### Output History ##########################
 

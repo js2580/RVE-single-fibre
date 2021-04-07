@@ -23,7 +23,7 @@ def compute_stiffness(name):
     list_macroscopic_strain = []
     list_stiffness_matrix = []
 
-    currentFrame = step1.frames[-2]
+    currentFrame = step1.frames[1]
     #Looping for each time increment to obtain full meso-scale stress-strain
     #Subset region
     myregion = myAssembly.elementSets[' ALL ELEMENTS']
