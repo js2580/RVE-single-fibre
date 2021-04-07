@@ -23,6 +23,13 @@ __pycache__/
 *.dmp
 *.exception
 *.env
+*.lck
+*.SMABulk
+*.cid
+*.mdl
+*.simdir*
+*.simlog
+*.stt
 
 
 # C extensions

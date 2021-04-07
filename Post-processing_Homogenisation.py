@@ -55,20 +55,15 @@ def compute_stiffness(name):
         stiffness_matrix = macroscopic_stress/macroscopic_strain  # Compute stiffness tensors
         list_macroscopic_stress.append(macroscopic_stress)               
         list_macroscopic_strain.append(macroscopic_strain)   
-        list_stiffness_matrix.append(stiffness_matrix)                                                     
-                                                      
-
+        list_stiffness_matrix.append(stiffness_matrix)                                            
+                                                    
     output_file = open('homogenised_stress_output_case' + name + '.txt','w')
     output_file.write('Macro-Stress \t Macro-Strain \t Stiffness matrix \n')
     for i in loadlist:
         output_file.write('%16.8E \t' % (list_macroscopic_stress[i]))
         output_file.write('%16.8E \t' % (list_macroscopic_strain[i]))
         output_file.write('%16.8E \n' % (list_stiffness_matrix[i]))
-
     output_file.close()
 
 for case in range(1,10):
     compute_stiffness(str(case))
-
-
-
