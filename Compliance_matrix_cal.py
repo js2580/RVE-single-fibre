@@ -35,6 +35,10 @@ C12 = C22 * -float(extract_data('case3')[1][0])/float(extract_data('case3')[1][1
 C13 = C33 * -float(extract_data('case1')[1][0])/float(extract_data('case1')[1][2])
 C23 = C33 * -float(extract_data('case1')[1][1])/float(extract_data('case1')[1][2])
 
+# C12 = C22 * -float(extract_data('case2')[1][1])/float(extract_data('case2')[1][0])
+# C13 = C33 * -float(extract_data('case2')[1][2])/float(extract_data('case2')[1][0])
+# C23 = C33 * -float(extract_data('case1')[1][2])/float(extract_data('case1')[1][1])
+
 print(C12)
 print(C13)
 print(C23)

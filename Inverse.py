@@ -29,12 +29,14 @@ outputfile.write(str(S_matrix/10**3) + '\n')
 
 outputfile.write('############### Properties ###################\n')
 
+# NOTE: E1 = E2, G12 = G23 and v13 = v23
+
 outputfile.write('E1 = ' + '143' + '\n')
 outputfile.write('E2 = ' + '143' + '\n')
 outputfile.write('E3 = ' + '213' + '\n')
 outputfile.write('v12 = ' + '0.194'  + '\n')
 outputfile.write('v13 = ' + '0.256'  + '\n')
-outputfile.write('v23 = ' + '0.194'  + '\n')
+outputfile.write('v23 = ' + '0.256'  + '\n')
 outputfile.write('G12 = ' + '53.8'  + '\n')
 outputfile.write('G13 = ' + '45.4'  + '\n')
 outputfile.write('G23 = ' + '53.8'  + '\n')
