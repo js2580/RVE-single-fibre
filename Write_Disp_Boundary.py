@@ -16,7 +16,7 @@ if E1 == True:
     DispBoundary = open('Disp_Boundary_case1.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
     DispBoundary.write('*Boundary\n')
-    DispBoundary.write('RP4, 3, 3, ' + str(Disp) + '\n')
+    DispBoundary.write('RP6, 1, 1, ' + str(Disp) + '\n')
     DOF1 = True
     DOF2 = True
     DOF3 = True
@@ -27,7 +27,7 @@ if E2 == True:
     DispBoundary = open('Disp_Boundary_case2.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
     DispBoundary.write('*Boundary\n')
-    DispBoundary.write('RP6, 1, 1, ' + str(Disp) + '\n')
+    DispBoundary.write('RP5, 2, 2, ' + str(Disp) + '\n')
     DOF1 = True
     DOF2 = True
     DOF3 = True
@@ -38,7 +38,7 @@ if E3 == True:
     DispBoundary = open('Disp_Boundary_case3.txt','w')
     DispBoundary.write('** \n** BOUNDARY CONDITIONS \n** \n')
     DispBoundary.write('*Boundary\n')
-    DispBoundary.write('RP5, 2, 2, ' + str(Disp) + '\n')
+    DispBoundary.write('RP4, 3, 3, ' + str(Disp) + '\n')
     DOF1 = True
     DOF2 = True
     DOF3 = True

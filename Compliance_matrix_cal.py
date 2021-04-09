@@ -1,47 +1,107 @@
 import numpy as np
 
-np.set_printoptions(precision=2)        #Set float value to 2 decimal places
-
-coefficient = []
-strain = []
-def extract_data(name):
-    Inputfile = open('homogenised_stress_output_' + name + '.txt','r')
-    Inputfile.data = Inputfile.read()
-    Inputfile.data = Inputfile.data.split('\n')
-    coefficient = []
-    strain = []
-    for i in range (1,7):  #Line 0 is header
-        coefficient.append(Inputfile.data[i].split('\t')[2])
-        strain.append(Inputfile.data[i].split('\t')[1])
-        #print(sigma)
-    Inputfile.close()
-    return coefficient, strain
-
 #           sigma[0],   sigma[1],   sigma[2],   sigma[3],   sigma[4],   sigma[5]
 # global        x   ,     y   ,         z   ,      xy   ,       xz  ,       yz
 
 # NOTE: E1 = E2, G12 = G23 and v13 = v23
+stress = []
+strain = []
+coefficient = []
+energy = []
+volume = []
+def extract_data(name):
+    stress = []
+    strain = []
+    coefficient = []
+    energy = []
+    volume = []
+    Inputfile = open('homogenised_stress_output_' + name + '.txt','r')
+    Inputfile.data = Inputfile.read()
+    Inputfile.data = Inputfile.data.split('\n')
+    for i in range (1,7):  #Line 0 is header
+        stress.append(Inputfile.data[i].split('\t')[0])
+        strain.append(Inputfile.data[i].split('\t')[1])
+        coefficient.append(Inputfile.data[i].split('\t')[2])
+        energy.append(Inputfile.data[i].split('\t')[3])
+        volume.append(Inputfile.data[i].split('\t')[4])
+        #print(sigma)
+    Inputfile.close()
+    return stress, strain, coefficient, energy, volume
 
 
-C11 = float(extract_data('case2')[0][0])
-C22 = float(extract_data('case3')[0][1])
-C33 = float(extract_data('case1')[0][2]) 
+# C11 = float(extract_data('case1')[2][0])
+# C22 = float(extract_data('case2')[2][1])
+# C33 = float(extract_data('case3')[2][2]) 
 
-C44 = float(extract_data('case4')[0][3])
-C55 = float(extract_data('case5')[0][4])
-C66 = float(extract_data('case6')[0][5])
+C11 = 160720
+C22 = 160720
+C33 = 230610
 
-C12 = C22 * -float(extract_data('case3')[1][0])/float(extract_data('case3')[1][1])
-C13 = C33 * -float(extract_data('case1')[1][0])/float(extract_data('case1')[1][2])
-C23 = C33 * -float(extract_data('case1')[1][1])/float(extract_data('case1')[1][2])
+C44 = float(extract_data('case4')[2][3])
+C55 = float(extract_data('case5')[2][4])
+C66 = float(extract_data('case6')[2][5])
 
+
+def solve_energy_equation(name):
+    stress = []
+    strain = []
+    coefficient = []
+    energy = []
+    volume = []
+    stress, strain, coefficient, energy, volume = (extract_data(name))
+    energy = float(energy[0])
+    volume = float(volume[0])
+
+    term1 = 0.5 * C11 * float(strain[0])**2
+    term4 = 0.5 * C22 * float(strain[1])**2
+    term6 = 0.5 * C33 * float(strain[2])**2
+    term7 = 0.5 * C44 * float(strain[3])**2
+    term8 = 0.5 * C55 * float(strain[4])**2
+    term9 = 0.5 * C66 * float(strain[5])**2
+    RH = (energy/volume) - term1 - term4 - term6 -term7 - term8 - term9
+    term2_coeff = float(strain[0]) * float(strain[1])
+    term3_coeff = float(strain[0]) * float(strain[2])
+    term5_coeff = float(strain[1]) * float(strain[2])
+    LH = np.array([term2_coeff, term3_coeff, term5_coeff])
+
+    return RH, LH
+
+RH1, LH1 = solve_energy_equation('case1')
+RH2, LH2 = solve_energy_equation('case2')
+RH3, LH3 = solve_energy_equation('case3')
+
+
+RH = np.array([ [RH1], [RH2], [RH3] ])
+LH = np.array([ [LH1[0], LH1[1], LH1[2] ], [LH2[0], LH2[1], LH2[2] ], [LH3[0], LH3[1], LH3[2] ] ])
+print('C11 =' + str(C11))
+print(RH)
+print(LH)
+
+
+inverse_matrix = np.linalg.inv(LH)
+solution = np.dot(inverse_matrix,RH)
+print()
+print(solution)
+# strain_eq1 = np.array([])
+
+# v = -float(extract_data('case1')[1][1])/float(extract_data('case1')[1][0])
+# C12 = C22 * v / (1-v)   
+# v =  -float(extract_data('case1')[1][2])/float(extract_data('case1')[1][0])                                                              # From macromechanical Analysis of a lamina
+# C13 = C33 * v / (1-v) 
+# v = -float(extract_data('case1')[1][2])/float(extract_data('case2')[1][1])
+# C23 = C33 * v / (1-v)
+
+# print(v)
 # C12 = C22 * -float(extract_data('case2')[1][1])/float(extract_data('case2')[1][0])
 # C13 = C33 * -float(extract_data('case2')[1][2])/float(extract_data('case2')[1][0])
 # C23 = C33 * -float(extract_data('case1')[1][2])/float(extract_data('case1')[1][1])
 
-print(C12)
-print(C13)
-print(C23)
+# print(C12)
+# print(C13)
+# print(C23)
+C12 = float(solution[0])
+C13 = float(solution[1])
+C23 = float(solution[2])
 
 # C12 = float(extract_data('case7')[0][4])
 # C13 = float(extract_data('case8')[0][5])
@@ -77,6 +137,7 @@ G23 = 1/S_matrix[5][5]
 
 outputfile = open('Result_effective_properties.txt','w')
 ############### C matrix ###################
+np.set_printoptions(precision=2)        #Set float value to 2 decimal places
 outputfile.write('############### C matrix ###################\n')
 
 outputfile.write(str(C_matrix/10**3) + '\n')
