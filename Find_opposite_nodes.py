@@ -5,6 +5,7 @@ data = rawdata.split('\n')
 
 start_node_index = data.index('*Node')+1
 end_node_index = data.index('*Element, type=C3D6')-1 #C3D8
+#end_node_index = data.index('*Element, type=C3D8')-1 #C3D8
 end_assembly_index = data.index('*End Assembly')
 
 nodeNumber = []
@@ -169,23 +170,23 @@ RBEdge = list(set(RBedge) - set(allCorner))
 
 
 ################# Paired nodes between two opposite surfaces ###############
-Mapping_tolerance = 1*10**-7
-pairLR = []
+Mapping_tolerance = 1*10**-6
+pairRL = []
 pairTB = []
 pairFB = []
 errorpair = []
 
 
-# Left to Right along X-axis
-for i in range (0,len(LeftS)):
-    iNode = LeftS[i]
-    for j in range (0,len(RightS)):
-        jNode = RightS[j]
+# Right to Left along X-axis
+for i in range (0,len(RightS)):
+    iNode = RightS[i]
+    for j in range (0,len(LeftS)):
+        jNode = LeftS[j]
+        #print(abs( nodeY[iNode-1] - nodeY[jNode-1] ))
         if abs( nodeY[iNode-1] - nodeY[jNode-1] ) <= Mapping_tolerance:
             if abs( nodeZ[iNode-1] - nodeZ[jNode-1] ) <= Mapping_tolerance:
-                pairLR.append([iNode, jNode])
+                pairRL.append([iNode, jNode])
                 continue
-
 
 # Top to Bot along Y-axis
 for i in range (0,len(TopS)):

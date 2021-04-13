@@ -1,0 +1,1 @@
+abaqus job=PBC_RVE_single_fibre_case3 input=PBC_RVE_single_fibre_case3.inp interactive ask_delete=NO 

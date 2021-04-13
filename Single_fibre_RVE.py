@@ -3,7 +3,7 @@ from abaqusConstants import *
 from caeModules import *
 from driverUtils import executeOnCaeStartup
 
-#abaqus cae -noGUI Single_fibre_RVE.py
+#abaqus cae -noGUI python Single_fibre_RVE.py
 
 
 
@@ -55,7 +55,7 @@ a.InstanceFromBooleanMerge(name='Union_part', instances=(a.instances['Fibre-1'],
 ###################### Material properties ##########################
 ################ ~~~~~~ Fibre ~~~~~~~~~ ##########################
 mdb.models['Model-1'].Material(name='Fibre')
-mdb.models['Model-1'].materials['Fibre'].Elastic(table=((379.3*10**3.0, 0.1), ))
+mdb.models['Model-1'].materials['Fibre'].Elastic(table=((379.3E3, 0.1), ))
 
 # mdb.models['Model-1'].materials['Fibre'].Elastic(type=ENGINEERING_CONSTANTS, 
 #     table=((231000.0, 13000.0, 13000.0, 0.3, 0.46, 0.46, 11300.0, 4450.0, 
@@ -63,7 +63,7 @@ mdb.models['Model-1'].materials['Fibre'].Elastic(table=((379.3*10**3.0, 0.1), ))
 
 ################ ~~~~~~ Fibre ~~~~~~~~~ ##########################
 mdb.models['Model-1'].Material(name='Matrix')
-mdb.models['Model-1'].materials['Matrix'].Elastic(table=((68.3*10**3, 0.3), ))
+mdb.models['Model-1'].materials['Matrix'].Elastic(table=((68.3E3, 0.3), ))
 # mdb.models['Model-1'].materials['Matrix'].ConcreteDamagedPlasticity(table=((
 #     29.0, 0.1, 1.29, 1.0, 0.0001), ))
 # mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteCompressionHardening(
@@ -122,6 +122,9 @@ p.SectionAssignment(region=region, sectionName='Matrix section', offset=0.0,
 
 ###################### Assign Mesh ##########################
 
+######## FIBRE 
+
+
 p = mdb.models['Model-1'].parts['Union_part']
 elemType1 = mesh.ElemType(elemCode=C3D8, elemLibrary=STANDARD, 
     secondOrderAccuracy=OFF, distortionControl=DEFAULT)
@@ -134,8 +137,22 @@ p.setElementType(regions=region, elemTypes=(elemType1, elemType2,
 
 p = mdb.models['Model-1'].parts['Union_part']
 c = p.cells
+cells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+    elemType3))
+
+p = mdb.models['Model-1'].parts['Union_part']
+c = p.cells
 pickedRegions = c.getSequenceFromMask(mask=('[#1 ]', ), )
 p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
+#p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
+
+
+
+
+######## MATRIX 
+
 
 p = mdb.models['Model-1'].parts['Union_part']
 elemType1 = mesh.ElemType(elemCode=C3D8, elemLibrary=STANDARD, 
@@ -147,6 +164,16 @@ region = p.sets['Matrix cell']
 p.setElementType(regions=region, elemTypes=(elemType1, elemType2, 
     elemType3))
 
+    
+
+# p = mdb.models['Model-1'].parts['Union_part']
+# c = p.cells
+# pickedRegions = c.getSequenceFromMask(mask=('[#2 ]', ), )
+# # #p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
+# p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
+
+
+
 p = mdb.models['Model-1'].parts['Union_part']
 p.seedPart(size=0.0005, deviationFactor=0.1, minSizeFactor=0.1)
 p.generateMesh()
@@ -154,6 +181,11 @@ p.generateMesh()
 
 ###################### Create Steps ##########################
 
+# Linear
+# mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
+#     initialInc=0.1, maxInc=0.1)
+
+# Non-linear
 mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
     maxNumInc=1000, stabilizationMagnitude=0.0002, 
     stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 

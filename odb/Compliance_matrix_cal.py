@@ -122,8 +122,8 @@ v12 = -S_matrix[0][1]/S_matrix[0][0]
 v13 = -S_matrix[0][2]/S_matrix[0][0]
 v23 = -S_matrix[1][2]/S_matrix[1][1]
 
-G12 = 1/S_matrix[4][4]
-G13 = 1/S_matrix[3][3]
+G12 = 1/S_matrix[3][3]
+G13= 1/S_matrix[4][4]
 G23 = 1/S_matrix[5][5]
 
 outputfile = open('Result_effective_properties.txt','w')
@@ -139,15 +139,15 @@ outputfile.write(str(S_matrix/10**3) + '\n')
 
 outputfile.write('############### Properties ###################\n')
 
-outputfile.write('E1 = ' + str("{0:.3f}".format(E1/10**3)) + '\n')
-outputfile.write('E2 = ' + str("{0:.3f}".format(E2/10**3)) + '\n')
-outputfile.write('E3 = ' + str("{0:.3f}".format(E3/10**3)) + '\n')
+outputfile.write('E1 = ' + str("{0:.3f}".format(E1)) + '\n')
+outputfile.write('E2 = ' + str("{0:.3f}".format(E2)) + '\n')
+outputfile.write('E3 = ' + str("{0:.3f}".format(E3)) + '\n')
 outputfile.write('v12 = ' + str("{0:.3f}".format(v12)) + '\n')
 outputfile.write('v13 = ' + str("{0:.3f}".format(v13)) + '\n')
 outputfile.write('v23 = ' + str("{0:.3f}".format(v23)) + '\n')
-outputfile.write('G12 = ' + str("{0:.3f}".format(G12/10**3)) + '\n')
-outputfile.write('G13 = ' + str("{0:.3f}".format(G13/10**3)) + '\n')
-outputfile.write('G23 = ' + str("{0:.3f}".format(G23/10**3)) + '\n')
+outputfile.write('G12 = ' + str("{0:.3f}".format(G12)) + '\n')
+outputfile.write('G13 = ' + str("{0:.3f}".format(G13)) + '\n')
+outputfile.write('G23 = ' + str("{0:.3f}".format(G23)) + '\n')
 
 outputfile.close()
 

@@ -51,23 +51,22 @@ for i in range (0,len(var)):
             writeinput.write('*EQUATION\n')
             writeinput.write('3\n')
             writeinput.write( 'Node' + str(var[i][0]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][1]) + ', ' + str(j) + ', -1., RP4, ' + str(j) + ', -1\n')
-
 writeinput.write('**Right - Left surfaces\n')
-var = pairLR
+var = pairRL
 for i in range (0,len(var)):
     for j in range (1,4):
         if j == 1 and DOF1 == True:
             writeinput.write('*EQUATION\n')
             writeinput.write('3\n')
-            writeinput.write( 'Node' + str(var[i][1]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][0]) + ', ' + str(j) + ', -1., RP6, ' + str(j) + ', -1\n')
+            writeinput.write( 'Node' + str(var[i][0]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][1]) + ', ' + str(j) + ', -1., RP6, ' + str(j) + ', -1\n')
         elif j == 2 and DOF2 == True:
             writeinput.write('*EQUATION\n')
             writeinput.write('3\n')
-            writeinput.write( 'Node' + str(var[i][1]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][0]) + ', ' + str(j) + ', -1., RP6, ' + str(j) + ', -1\n')
+            writeinput.write( 'Node' + str(var[i][0]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][1]) + ', ' + str(j) + ', -1., RP6, ' + str(j) + ', -1\n')
         elif j == 3 and DOF3 == True:
             writeinput.write('*EQUATION\n')
             writeinput.write('3\n')
-            writeinput.write( 'Node' + str(var[i][1]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][0]) + ', ' + str(j) + ', -1., RP6, ' + str(j) + ', -1\n')        
+            writeinput.write( 'Node' + str(var[i][0]) + ', ' + str(j) + ', 1., ' + 'Node' + str(var[i][1]) + ', ' + str(j) + ', -1., RP6, ' + str(j) + ', -1\n')        
 ##########################################################
 #EdgeSet1 = RBEdge - LBEdge BF - AE            
 #EdgeSet2 = LTEdge - LBEdge DH - AE

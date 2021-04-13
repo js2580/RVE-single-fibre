@@ -37,7 +37,6 @@ def compute_stiffness(name):
     strainField = currentFrame.fieldOutputs['LE']
     ivolField = currentFrame.fieldOutputs['IVOL']
     energyField = currentFrame.fieldOutputs['SENER']
-
     field = stressField.getSubset(region = myregion, position = INTEGRATION_POINT)
     fieldValues_stress = field.values
     field = strainField.getSubset(region = myregion, position = INTEGRATION_POINT)
@@ -46,7 +45,6 @@ def compute_stiffness(name):
     fieldValues_ivol = field.values
     field = energyField.getSubset(region = myregion, position = INTEGRATION_POINT)
     fieldValues_energy = field.values
-
     for loadtype in loadlist:
         counter = 0                     # inegration point number
         temp_vol = 0                    # temporary_volume
@@ -78,5 +76,5 @@ def compute_stiffness(name):
         output_file.write('%16.8E \n' % (temp_vol))
     output_file.close()
 
-for case in range(1,7):
+for case in range(1,10):
     compute_stiffness(str(case))
