@@ -29,6 +29,7 @@ def extract_data(name):
     return stress, strain, coefficient, energy, volume
 
 
+
 C11 = float(extract_data('case1')[2][0])
 C22 = float(extract_data('case2')[2][1])
 C33 = float(extract_data('case3')[2][2]) 
@@ -40,7 +41,6 @@ C33 = float(extract_data('case3')[2][2])
 C44 = float(extract_data('case4')[2][3])
 C55 = float(extract_data('case5')[2][4])
 C66 = float(extract_data('case6')[2][5])
-
 
 def solve_energy_equation(name):
     stress = []
@@ -56,18 +56,17 @@ def solve_energy_equation(name):
     term1 = 0.5 * C11 * float(strain[0])**2
     term4 = 0.5 * C22 * float(strain[1])**2
     term6 = 0.5 * C33 * float(strain[2])**2
-    # term7 = 0.5 * C44 * (float(strain[3])/2)**2
-    # term8 = 0.5 * C55 * (float(strain[4])/2)**2
-    # term9 = 0.5 * C66 * (float(strain[5])/2)**2
-    term7 = 0.5 * C44 * float(strain[3])**2
-    term8 = 0.5 * C55 * float(strain[4])**2
-    term9 = 0.5 * C66 * float(strain[5])**2
+    term7 = 0.5 * C44 * (float(strain[3])/2)**2                 #engineering_strain (abaqus output) = 2*tensorial shear strain in pure shear
+    term8 = 0.5 * C55 * (float(strain[4])/2)**2
+    term9 = 0.5 * C66 * (float(strain[5])/2)**2
+    # term7 = 0.5 * C44 * float(strain[3])**2
+    # term8 = 0.5 * C55 * float(strain[4])**2
+    # term9 = 0.5 * C66 * float(strain[5])**2
     RH = (energy/volume) - (term1 + term4 + term6 + term7 + term8 + term9)
-    term2_coeff = float(strain[0]) * float(strain[1])
-    term3_coeff = float(strain[0]) * float(strain[2])
-    term5_coeff = float(strain[1]) * float(strain[2])
+    term2_coeff = abs(float(strain[0]) * float(strain[1]))
+    term3_coeff = abs(float(strain[0]) * float(strain[2]))
+    term5_coeff = abs(float(strain[1]) * float(strain[2]))
     LH = np.array([term2_coeff, term3_coeff, term5_coeff])
-
     return RH, LH
 
 RH1, LH1 = solve_energy_equation('case1')
@@ -77,13 +76,15 @@ RH3, LH3 = solve_energy_equation('case3')
 
 RH = np.array([ [RH1], [RH2], [RH3] ])
 LH = np.array([ [LH1[0], LH1[1], LH1[2] ], [LH2[0], LH2[1], LH2[2] ], [LH3[0], LH3[1], LH3[2] ] ])
-print('C11 =' + str(C11))
+
 print(RH)
 print(LH)
 
+solution = np.linalg.solve(LH,RH)
 
-inverse_matrix = np.linalg.inv(LH)
-solution = np.dot(inverse_matrix,RH)
+
+# inverse_matrix = np.linalg.inv(LH)
+# solution = np.dot(inverse_matrix,RH)
 print(solution)
 
 
@@ -125,6 +126,13 @@ v23 = -S_matrix[1][2]/S_matrix[1][1]
 G12 = 1/S_matrix[4][4]
 G13 = 1/S_matrix[3][3]
 G23 = 1/S_matrix[5][5]
+
+
+
+
+RH = np.array([ [RH1], [RH2], [RH3] ])
+LH = np.array([ [LH1[0], LH1[1], LH1[2] ], [LH2[0], LH2[1], LH2[2] ], [LH3[0], LH3[1], LH3[2] ] ])
+
 
 outputfile = open('Result_effective_properties.txt','w')
 ############### C matrix ###################

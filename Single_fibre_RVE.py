@@ -3,7 +3,7 @@ from abaqusConstants import *
 from caeModules import *
 from driverUtils import executeOnCaeStartup
 
-#abaqus cae -noGUI python Single_fibre_RVE.py
+#abaqus cae -noGUI Single_fibre_RVE.py
 
 
 
@@ -164,6 +164,11 @@ region = p.sets['Matrix cell']
 p.setElementType(regions=region, elemTypes=(elemType1, elemType2, 
     elemType3))
 
+p = mdb.models['Model-1'].parts['Union_part']
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#2 ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
+
     
 
 # p = mdb.models['Model-1'].parts['Union_part']
@@ -183,15 +188,17 @@ p.generateMesh()
 
 # Linear
 # mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
-#     initialInc=0.1, maxInc=0.1)
-
+#     maxNumInc=1000, initialInc=0.1, maxInc=0.1)
 # Non-linear
 mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
-    maxNumInc=1000, stabilizationMagnitude=0.0002, 
-    stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
-    continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
-    minInc=1e-5, maxInc=0.1, nlgeom=ON
-    )
+    maxNumInc=1000, initialInc=0.1, maxInc=1, nlgeom=ON)
+
+# mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
+#     maxNumInc=1000, stabilizationMagnitude=0.0002, 
+#     stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
+#     continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
+#     minInc=1e-5, maxInc=0.1, nlgeom=ON
+#     )
 
 ###################### Output History ##########################
 
