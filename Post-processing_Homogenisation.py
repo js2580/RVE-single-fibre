@@ -7,6 +7,18 @@ import sys
 extrude_dept = 0.008
 
 def compute_stiffness(name,extrude_dept):
+    E11 = []
+    E22 = []
+    E33 = []
+    G12 = []
+    G13 = []
+    G23 = []
+    v12 = []
+    v13 = []
+    v21 = []
+    v23 = []
+    v31 = []
+    v32 = []
     #define parameters
     area = extrude_dept**2
     length = extrude_dept
@@ -151,9 +163,9 @@ def compute_stiffness(name,extrude_dept):
         E11 = (force/area)/(disp/length)
         v12 = (abs(disp_C2[1]-disp_C6[1])/length) / (abs(disp_C1[0]-disp_C2[0])/length)
         v13 = (abs(disp_C2[2]-disp_C3[2])/length) / (abs(disp_C1[0]-disp_C2[0])/length)
-        #print(E11)
-        #print(v12)
-        #print(v13)
+        print('E11 =' + str(E11))
+        print('v12 =' + str(v12))
+        print('v13 =' + str(v13))
     elif name == str(2):
         myregion = myAssembly.nodeSets['RP5']
         dispField = currentFrame.fieldOutputs['U']
@@ -170,9 +182,9 @@ def compute_stiffness(name,extrude_dept):
         E22 = (force/area)/(disp/length)
         v21 = (abs(disp_C1[0]-disp_C2[0])/length) / (abs(disp_C2[1]-disp_C6[1])/length)
         v23 = (abs(disp_C2[2]-disp_C3[2])/length) / (abs(disp_C2[1]-disp_C6[1])/length)
-        # print(E22)
-        # print(v21)
-        # print(v23)
+        print('E22 =' + str(E22))
+        print('v21 =' + str(v21))
+        print('v23 =' + str(v23))
     elif name == str(3):
         myregion = myAssembly.nodeSets['RP4']
         dispField = currentFrame.fieldOutputs['U']
@@ -189,9 +201,9 @@ def compute_stiffness(name,extrude_dept):
         E33 = (force/area)/(disp/length)
         v31 = (abs(disp_C1[0]-disp_C2[0])/length) / (abs(disp_C2[2]-disp_C3[2])/length)
         v32 = (abs(disp_C2[1]-disp_C6[1])/length) / (abs(disp_C2[2]-disp_C3[2])/length)
-        # print(E33)
-        # print(v31)
-        # print(v32)
+        print('E33 =' + str(E33))
+        print('v31 =' + str(v31))
+        print('v32 =' + str(v32))
     elif name == str(4):
         myregion = myAssembly.nodeSets['RP5']
         dispField = currentFrame.fieldOutputs['U']
@@ -202,11 +214,11 @@ def compute_stiffness(name,extrude_dept):
         field = forceField.getSubset(region = myregion)
         fieldValues_force = field.values
         #
-        disp = fieldValues_disp[0].data[0]
+        disp = fieldValues_disp[0].data[0]                  
         force = fieldValues_force[0].data[0]
         #
-        G12 = 2 * (force/area) / (disp_C1[0]/length + disp_C6[1]/length)
-        print(G12)
+        G12 = (force/area) / (disp/length + disp/length)    #NOTE: THIS ASSUMMED THAT DISPLACEMENT MAGNITUDE IS THE SAME
+        print('G12 =' + str(G12))
     elif name == str(5):
         myregion = myAssembly.nodeSets['RP4']
         dispField = currentFrame.fieldOutputs['U']
@@ -220,8 +232,8 @@ def compute_stiffness(name,extrude_dept):
         disp = fieldValues_disp[0].data[0]
         force = fieldValues_force[0].data[0]
         #
-        G13 = 2 * (force/area) / (disp_C1[0]/length + disp_C2[2]/length)
-        print(G13)
+        G13 = (force/area) / (disp/length + disp/length)    #NOTE: THIS ASSUMMED THAT DISPLACEMENT MAGNITUDE IS THE SAME
+        print('G13 =' + str(G13))
     elif name == str(6):
         myregion = myAssembly.nodeSets['RP4']
         dispField = currentFrame.fieldOutputs['U']
@@ -235,8 +247,8 @@ def compute_stiffness(name,extrude_dept):
         disp = fieldValues_disp[0].data[1]
         force = fieldValues_force[0].data[1]
         #
-        G23 = 2 * (force/area) / (disp_C6[1]/length + disp_C3[2]/length)
-        print(G23)
+        G23 = (force/area) / (disp/length + disp/length)    #NOTE: THIS ASSUMMED THAT DISPLACEMENT MAGNITUDE IS THE SAME
+        print('G23 =' + str(G23))
     #
     #
     output_file = open('homogenised_stress_output_case' + name + '.txt','w')
@@ -247,12 +259,57 @@ def compute_stiffness(name,extrude_dept):
         output_file.write('%16.8E \t' % (list_stiffness_matrix[i]))
         output_file.write('%16.8E \t' % (list_energy[i]))
         output_file.write('%16.8E \n' % (temp_vol))
-    output_file.write('disp = %16.8E \n' % (disp))
-    output_file.write('force = %16.8E \n' % (force))
+    # output_file.write('disp = %16.8E \n' % (disp))
+    # output_file.write('force = %16.8E \n' % (force))
     #
     output_file.close()
+    return E11, E22, E33, G12, G13, G23, v12, v13, v21, v23, v31, v32
 
-for case in range(1,7):
-    compute_stiffness(str(case),extrude_dept)
+# E11 = []
+# E22 = []
+# E33 = []
+# G12 = []
+# G13 = []
+# G23 = []
+# v12 = []
+# v13 = []
+# v21 = []
+# v23 = []
+# v31 = []
+# v32 = []
+material_output = open('Homogenised material properties output.txt','w')
+for case in range(1,10):
+    
+    E11, E22, E33, G12, G13, G23, v12, v13, v21, v23, v31, v32 = compute_stiffness(str(case),extrude_dept)
+    # if E11 is not None:
+    #     material_output.write('E11 = %16.8E \n' % (E11))
+    # elif E22 is not None:
+    #     material_output.write('E22 = %16.8E \n' % (E22))
+    # elif E33 is not None:
+    #     material_output.write('E33 = %16.8E \n' % (E33))
+    # elif G12 is not None:
+    #     material_output.write('G12 = %16.8E \n' % (G12))
+    # elif G13 is not None:
+    #     material_output.write('G13 = %16.8E \n' % (G13))
+    # elif G23 is not None:
+    #     material_output.write('G23 = %16.8E \n' % (G23))
+    # elif v12 is not None:
+    #     material_output.write('v12 = %16.8E \n' % (v12))
+    # elif E22 is not None:
+    #     material_output.write('E22 = %16.8E \n' % (E22))
+    # elif v13 is not None:
+    #     material_output.write('v13 = %16.8E \n' % (v13))
+    # elif v21 is not None:
+    #     material_output.write('v21 = %16.8E \n' % (v21))
+    # elif v23 is not None:
+    #     material_output.write('v23 = %16.8E \n' % (v23))
+    # elif v31 is not None:
+    #     material_output.write('v31 = %16.8E \n' % (v31))
+    # elif v32 is not None:
+    #     material_output.write('v32 = %16.8E \n' % (v32))
+
+
+material_output.close()
+
 
 

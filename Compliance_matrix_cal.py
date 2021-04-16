@@ -42,58 +42,61 @@ C44 = float(extract_data('case4')[2][3])
 C55 = float(extract_data('case5')[2][4])
 C66 = float(extract_data('case6')[2][5])
 
-def solve_energy_equation(name):
-    stress = []
-    strain = []
-    coefficient = []
-    energy = []
-    volume = []
-    stress, strain, coefficient, energy, volume = (extract_data(name))
-    energy = float(energy[0])
-    volume = float(volume[0])
-#ABAQUS always reports shear strain as engineering strain :::: https://classes.engineering.wustl.edu/2009/spring/mase5513/abaqus/docs/v6.6/books/usb/default.htm?startat=pt01ch01s02aus02.html
-#engineering strain = tensorial shear strain (for pure shear deformation only)
-    term1 = 0.5 * C11 * float(strain[0])**2
-    term4 = 0.5 * C22 * float(strain[1])**2
-    term6 = 0.5 * C33 * float(strain[2])**2
-    term7 = 0.5 * C44 * (float(strain[3])/2)**2                 #engineering_strain (abaqus output) = 2*tensorial shear strain in pure shear
-    term8 = 0.5 * C55 * (float(strain[4])/2)**2
-    term9 = 0.5 * C66 * (float(strain[5])/2)**2
-    # term7 = 0.5 * C44 * float(strain[3])**2
-    # term8 = 0.5 * C55 * float(strain[4])**2
-    # term9 = 0.5 * C66 * float(strain[5])**2
-    RH = (energy/volume) - (term1 + term4 + term6 + term7 + term8 + term9)
-    term2_coeff = abs(float(strain[0]) * float(strain[1]))
-    term3_coeff = abs(float(strain[0]) * float(strain[2]))
-    term5_coeff = abs(float(strain[1]) * float(strain[2]))
-    LH = np.array([term2_coeff, term3_coeff, term5_coeff])
-    return RH, LH
+# def solve_energy_equation(name):
+#     stress = []
+#     strain = []
+#     coefficient = []
+#     energy = []
+#     volume = []
+#     stress, strain, coefficient, energy, volume = (extract_data(name))
+#     energy = float(energy[0])
+#     volume = float(volume[0])
+# #ABAQUS always reports shear strain as engineering strain :::: https://classes.engineering.wustl.edu/2009/spring/mase5513/abaqus/docs/v6.6/books/usb/default.htm?startat=pt01ch01s02aus02.html
+# #engineering strain = tensorial shear strain (for pure shear deformation only)
+#     term1 = 0.5 * C11 * float(strain[0])**2
+#     term4 = 0.5 * C22 * float(strain[1])**2
+#     term6 = 0.5 * C33 * float(strain[2])**2
+#     term7 = 0.5 * C44 * (float(strain[3])/2)**2                 #engineering_strain (abaqus output) = 2*tensorial shear strain in pure shear
+#     term8 = 0.5 * C55 * (float(strain[4])/2)**2
+#     term9 = 0.5 * C66 * (float(strain[5])/2)**2
+#     # term7 = 0.5 * C44 * float(strain[3])**2
+#     # term8 = 0.5 * C55 * float(strain[4])**2
+#     # term9 = 0.5 * C66 * float(strain[5])**2
+#     RH = (energy/volume) - (term1 + term4 + term6 + term7 + term8 + term9)
+#     term2_coeff = abs(float(strain[0]) * float(strain[1]))
+#     term3_coeff = abs(float(strain[0]) * float(strain[2]))
+#     term5_coeff = abs(float(strain[1]) * float(strain[2]))
+#     LH = np.array([term2_coeff, term3_coeff, term5_coeff])
+#     return RH, LH
 
-RH1, LH1 = solve_energy_equation('case1')
-RH2, LH2 = solve_energy_equation('case2')
-RH3, LH3 = solve_energy_equation('case3')
-
-
-RH = np.array([ [RH1], [RH2], [RH3] ])
-LH = np.array([ [LH1[0], LH1[1], LH1[2] ], [LH2[0], LH2[1], LH2[2] ], [LH3[0], LH3[1], LH3[2] ] ])
-
-print(RH)
-print(LH)
-
-solution = np.linalg.solve(LH,RH)
+# RH1, LH1 = solve_energy_equation('case1')
+# RH2, LH2 = solve_energy_equation('case2')
+# RH3, LH3 = solve_energy_equation('case3')
 
 
-# inverse_matrix = np.linalg.inv(LH)
-# solution = np.dot(inverse_matrix,RH)
-print(solution)
+# RH = np.array([ [RH1], [RH2], [RH3] ])
+# LH = np.array([ [LH1[0], LH1[1], LH1[2] ], [LH2[0], LH2[1], LH2[2] ], [LH3[0], LH3[1], LH3[2] ] ])
+
+# solution = np.linalg.solve(LH,RH)
+# C12 = float(solution[0])
+# C13 = float(solution[1])
+# C23 = float(solution[2])
+
+stress, strain, coefficient, energy, volume = extract_data('case7')
+C12 = 0.5 * ((float(stress[0]) + float(stress[1]))/float(strain[0]) - C11 - C22)
+
+stress, strain, coefficient, energy, volume = extract_data('case8')
+C13 = 0.5 * ((float(stress[0]) + float(stress[2]))/float(strain[0]) - C11 - C33)
+
+stress, strain, coefficient, energy, volume = extract_data('case9')
+C23 = 0.5 * ((float(stress[1]) + float(stress[2]))/float(strain[1]) - C22 - C33)
+
 
 
 # print(C12)
 # print(C13)
 # print(C23)
-C12 = float(solution[0])
-C13 = float(solution[1])
-C23 = float(solution[2])
+
 
 # C12 = float(extract_data('case7')[0][4])
 # C13 = float(extract_data('case8')[0][5])
@@ -130,8 +133,6 @@ G23 = 1/S_matrix[5][5]
 
 
 
-RH = np.array([ [RH1], [RH2], [RH3] ])
-LH = np.array([ [LH1[0], LH1[1], LH1[2] ], [LH2[0], LH2[1], LH2[2] ], [LH3[0], LH3[1], LH3[2] ] ])
 
 
 outputfile = open('Result_effective_properties.txt','w')
