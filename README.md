@@ -1,6 +1,6 @@
 # RVE-single-fibre
 
-Single_fibre_RVE.py ---> Generate model and .inp file ::: abaqus cae -noGUI Single_fibre_RVE.py
+Generate_Single_fibre_RVE.py ---> Generate model and .inp file ::: abaqus cae -noGUI Single_fibre_RVE.py
 
 Find_opposite_nodes.py ---> Find pair nodes at the opposite surfaces
 
