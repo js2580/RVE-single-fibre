@@ -61,7 +61,7 @@ mdb.models['Model-1'].materials['Fibre'].Elastic(table=((379.3E3, 0.1), ))
 #     table=((231000.0, 13000.0, 13000.0, 0.3, 0.46, 0.46, 11300.0, 4450.0, 
 #     4450.0), ))
 
-################ ~~~~~~ Fibre ~~~~~~~~~ ##########################
+################ ~~~~~~ Matrix ~~~~~~~~~ ##########################
 mdb.models['Model-1'].Material(name='Matrix')
 mdb.models['Model-1'].materials['Matrix'].Elastic(table=((68.3E3, 0.3), ))
 # mdb.models['Model-1'].materials['Matrix'].ConcreteDamagedPlasticity(table=((
