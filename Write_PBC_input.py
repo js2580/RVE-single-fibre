@@ -5,7 +5,9 @@ from Write_Disp_Boundary import *
 
 Disp = 0.008         #extrude_dept
 
-writeinput = open('PBC_input.txt','w')
+inp_folder = 'inp/'
+
+writeinput = open(f'{inp_folder}PBC_input.txt','w')
 
 # writeinput.write('*Nset, nset="_T-Datum csys-1", internal\n')
 # for i in SurfaceNode:
