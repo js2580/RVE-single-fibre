@@ -7,7 +7,7 @@ from driverUtils import executeOnCaeStartup
 
 
 
-fibre_diametre = 0.0062 #mm #(7 micron)
+fibre_diametre = 0.007 #mm #(7 micron)
 matrix_dimensions = 0.008 #mm
 extrude_depth = 0.008 #mm
 
@@ -25,6 +25,8 @@ p.BaseSolidExtrude(sketch=s, depth=extrude_depth)
 s.unsetPrimaryObject()
 p = mdb.models['Model-1'].parts['Fibre']
 del mdb.models['Model-1'].sketches['__profile__']
+
+########### CREATE MATRIX #################
 
 s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
     sheetSize=200.0)
@@ -54,25 +56,40 @@ a.InstanceFromBooleanMerge(name='Union_part', instances=(a.instances['Fibre-1'],
 
 ###################### Material properties ##########################
 ################ ~~~~~~ Fibre ~~~~~~~~~ ##########################
-mdb.models['Model-1'].Material(name='Fibre')
-mdb.models['Model-1'].materials['Fibre'].Elastic(table=((379.3E3, 0.1), ))
+# mdb.models['Model-1'].Material(name='Fibre')
+# mdb.models['Model-1'].materials['Fibre'].Elastic(table=((379.3E3, 0.1), ))
 
-# mdb.models['Model-1'].materials['Fibre'].Elastic(type=ENGINEERING_CONSTANTS, 
-#     table=((231000.0, 13000.0, 13000.0, 0.3, 0.46, 0.46, 11300.0, 4450.0, 
-#     4450.0), ))
+mdb.models['Model-1'].Material(name='Fibre')
+mdb.models['Model-1'].materials['Fibre'].Elastic(type=ENGINEERING_CONSTANTS, 
+    table=((231000.0, 13000.0, 13000.0, 0.3, 0.3, 0.46, 11300.0, 11300.0, 
+    4450.0), ))
+mdb.models['Model-1'].materials['Fibre'].Expansion(type=ORTHOTROPIC, 
+    table=((1e-07, 2.2e-05, 2.2e-05), ))
 
 ################ ~~~~~~ Matrix ~~~~~~~~~ ##########################
 mdb.models['Model-1'].Material(name='Matrix')
-mdb.models['Model-1'].materials['Matrix'].Elastic(table=((68.3E3, 0.3), ))
-# mdb.models['Model-1'].materials['Matrix'].ConcreteDamagedPlasticity(table=((
-#     29.0, 0.1, 1.29, 1.0, 0.0001), ))
-# mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteCompressionHardening(
-#     table=((176.0, 0.0), (176.0, 0.32), (17.6, 0.64), (1.76, 3.2)))
-# mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteTensionStiffening(
-#     table=((121.0, 0.0), (1.21, 0.001652893)))
-# mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteCompressionDamage(
-#     table=((0.0, 0.0), (0.0, 0.32), (0.8, 0.64), (0.9, 3.2)))
+mdb.models['Model-1'].materials['Matrix'].Elastic(table=((5070.0, 0.35), ))
+mdb.models['Model-1'].materials['Matrix'].Expansion(table=((4.85e-05, ), ))
+mdb.models['Model-1'].materials['Matrix'].ConcreteDamagedPlasticity(table=((
+    29.0, 0.1, 1.29, 1.0, 0.0001), ))
+mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteCompressionHardening(
+    table=((176.0, 0.0), (176.0, 0.32), (17.6, 0.64), (1.76, 3.2)))
+mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteTensionStiffening(
+    table=((121.0, 0.0), (1.21, 0.001652893)))
+mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteCompressionDamage(
+    table=((0.0, 0.0), (0.0, 0.32), (0.8, 0.64), (0.9, 3.2)))
 
+################ ~~~~~~ Cohesive ~~~~~~~~~ ##########################
+mdb.models['Model-1'].Material(name='Cohesive')
+mdb.models['Model-1'].materials['Cohesive'].Elastic(type=TRACTION, table=((
+    7612.0, 1370.0, 1370.0), ))
+mdb.models['Model-1'].materials['Cohesive'].QuadsDamageInitiation(table=((42.0, 
+    63.0, 63.0), ))
+mdb.models['Model-1'].materials['Cohesive'].quadsDamageInitiation.DamageEvolution(
+    type=ENERGY, mixedModeBehavior=BK, power=1.45, table=((0.002, 0.03, 0.03), 
+    ))
+mdb.models['Model-1'].materials['Cohesive'].quadsDamageInitiation.DamageStabilizationCohesive(
+    cohesiveCoeff=0.0001)
 
 ###################### Create Section ##########################
 mdb.models['Model-1'].HomogeneousSolidSection(name='Fibre section', 
@@ -106,19 +123,30 @@ region = p.sets['Matrix cell']
 p = mdb.models['Model-1'].parts['Union_part']
 p.SectionAssignment(region=region, sectionName='Matrix section', offset=0.0, 
     offsetType=MIDDLE_SURFACE, offsetField='', 
-    thicknessAssignment=FROM_SECTION)    
+    thicknessAssignment=FROM_SECTION)  
+
 
 ###################### Assign Material orientation ##########################
 
-# p = mdb.models['Model-1'].parts['Union_part']
-# region = p.sets['Fibre cell']
-# mdb.models['Model-1'].parts['Union_part'].MaterialOrientation(region=region, 
-#     orientationType=DISCRETE, axis=AXIS_3, normalAxisDefinition=VECTOR, 
-#     normalAxisVector=(0.0, 1.0, 0.0), flipNormalDirection=False, 
-#     normalAxisDirection=AXIS_3, primaryAxisDefinition=VECTOR, 
-#     primaryAxisVector=(0.0, 0.0, 1.0), primaryAxisDirection=AXIS_1, 
-#     flipPrimaryDirection=False, additionalRotationType=ROTATION_NONE, 
-#     angle=0.0, additionalRotationField='', stackDirection=STACK_3)
+p = mdb.models['Model-1'].parts['Union_part']
+region = p.sets['Fibre cell']
+mdb.models['Model-1'].parts['Union_part'].MaterialOrientation(region=region, 
+    orientationType=DISCRETE, axis=AXIS_3, normalAxisDefinition=VECTOR, 
+    normalAxisVector=(0.0, 1.0, 0.0), flipNormalDirection=False, 
+    normalAxisDirection=AXIS_3, primaryAxisDefinition=VECTOR, 
+    primaryAxisVector=(0.0, 0.0, 1.0), primaryAxisDirection=AXIS_1, 
+    flipPrimaryDirection=False, additionalRotationType=ROTATION_NONE, 
+    angle=0.0, additionalRotationField='', stackDirection=STACK_3)
+
+p = mdb.models['Model-1'].parts['Union_part']
+region = p.sets['Matrix cell']
+mdb.models['Model-1'].parts['Union_part'].MaterialOrientation(region=region, 
+    orientationType=DISCRETE, axis=AXIS_3, normalAxisDefinition=VECTOR, 
+    normalAxisVector=(0.0, 1.0, 0.0), flipNormalDirection=False, 
+    normalAxisDirection=AXIS_3, primaryAxisDefinition=VECTOR, 
+    primaryAxisVector=(0.0, 0.0, 1.0), primaryAxisDirection=AXIS_1, 
+    flipPrimaryDirection=False, additionalRotationType=ROTATION_NONE, 
+    angle=0.0, additionalRotationField='', stackDirection=STACK_3)
 
 ###################### Assign Mesh ##########################
 
@@ -148,11 +176,7 @@ pickedRegions = c.getSequenceFromMask(mask=('[#1 ]', ), )
 p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 #p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
 
-
-
-
 ######## MATRIX 
-
 
 p = mdb.models['Model-1'].parts['Union_part']
 elemType1 = mesh.ElemType(elemCode=C3D8, elemLibrary=STANDARD, 
@@ -169,7 +193,6 @@ c = p.cells
 pickedRegions = c.getSequenceFromMask(mask=('[#2 ]', ), )
 p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 
-    
 
 # p = mdb.models['Model-1'].parts['Union_part']
 # c = p.cells
@@ -177,11 +200,42 @@ p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 # # #p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 # p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
 
-
-
 p = mdb.models['Model-1'].parts['Union_part']
 p.seedPart(size=0.0005, deviationFactor=0.1, minSizeFactor=0.1)
 p.generateMesh()
+
+# ##################### Create surfaces #########################
+# p = mdb.models['Model-1'].parts['Union_part']
+# s = p.faces
+# side1Faces = s.findAt(((fibre_diametre/2,0,extrude_depth/2),),)
+# p.Surface(side1Faces=side1Faces, name='Cohesive surface')
+
+
+# p = mdb.models['Model-1'].parts['Union_part']
+# elements = p.surfaces['Cohesive surface'].elements
+# face2Elements = elements
+# p.Surface(face2Elements=face2Elements, name='Cohesive mesh')
+
+# p = mdb.models['Model-1'].parts['Union_part']
+# p.generateMeshByOffset(region=p.surfaces['Cohesive mesh'], meshType=SOLID, 
+#     totalThickness=0.0, numLayers=1, shareNodes=True)
+
+# p = mdb.models['Model-1'].parts['Union_part']
+# p.generateMesh()
+
+# p = mdb.models['Model-1'].parts['Union_part']
+# elements = p.surfaces['Cohesive surface'].elements
+# p.Set(elements=elements, name='Cohesive mesh')
+
+# #################### Cohesive section ########################
+# mdb.models['Model-1'].CohesiveSection(name='Cohesive section', 
+#     material='Cohesive', response=TRACTION_SEPARATION, 
+#     initialThicknessType=GEOMETRY, outOfPlaneThickness=None)
+
+# p = mdb.models['Model-1'].parts['Union_part']
+# p.SectionAssignment(region=region, sectionName='Cohesive section', offset=0.0, 
+#     offsetType=MIDDLE_SURFACE, offsetField='', 
+#     thicknessAssignment=FROM_SECTION)
 
 
 ###################### Create Steps ##########################
@@ -190,16 +244,19 @@ p.generateMesh()
 # mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
 #     maxNumInc=1000, initialInc=0.1, maxInc=0.1)
 # Non-linear
-mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
-    maxNumInc=1000, initialInc=0.1, maxInc=1, nlgeom=ON)
-
 # mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
-#     maxNumInc=1000, stabilizationMagnitude=0.0002, 
-#     stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
-#     continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
-#     minInc=1e-5, maxInc=0.1, nlgeom=ON
-#     )
+#     maxNumInc=1000, initialInc=0.1, maxInc=1, nlgeom=ON)
 
+mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
+    maxNumInc=1000, stabilizationMagnitude=0.0002, 
+    stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
+    continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
+    minInc=1e-15, maxInc=1, nlgeom=ON
+    )
+
+mdb.models['Model-1'].steps['Step-1'].control.setValues(allowPropagation=OFF, 
+    resetDefaultValues=OFF, timeIncrementation=(20.0, 40.0, 9.0, 16.0, 10.0, 
+    4.0, 12.0, 10.0, 6.0, 3.0, 50.0))
 ###################### Output History ##########################
 
 mdb.models['Model-1'].fieldOutputRequests['F-Output-1'].setValues(
@@ -391,19 +448,36 @@ a.regenerate()
 for i in SurfaceNode:
     a = mdb.models['Model-1'].rootAssembly.SetFromNodeLabels(name='Node' + str(i+1), nodeLabels=(('Union_part-1', (i+1,)),)) 
 
+
+##################### Generate inp file and move to inp folder ###########################
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
+
+inp_folder = 'inp/'
+import os
+if not os.path.exists(inp_folder):
+    os.makedirs(inp_folder)
+
+import shutil
+inp_file = 'RVE_single_fibre' + '.inp'
+
+if not os.path.exists(inp_file):
+    shutil.move(inp_file, inp_folder)
+else:
+    os.remove(f"{inp_folder}{inp_file}")
+    shutil.move(inp_file, inp_folder)
+
 
 
 ##################### Function Generate new .inp file with PBC and Disp_boundary included ##########################
 def generate_input_file(name):
-    Inputfile = open("RVE_single_fibre.inp",'r')
+    Inputfile = open(f"{inp_folder}RVE_single_fibre.inp",'r')
     rawdata = Inputfile.read()
     Inputfile.close()
     data = rawdata.split('\n')
     end_assembly_index = data.index('*End Assembly')
     output_field_index = data.index('** OUTPUT REQUESTS')
     #######################################################
-    writefile = open("PBC_RVE_single_fibre_" + name + ".inp",'w')
+    writefile = open(f"{inp_folder}PBC_RVE_single_fibre_" + name + ".inp",'w')
     for i in range (0,len(data)):
         if i == end_assembly_index:
             writefile.write("*INCLUDE, INPUT=PBC_input.txt \n")
