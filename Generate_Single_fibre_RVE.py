@@ -6,10 +6,38 @@ from driverUtils import executeOnCaeStartup
 #abaqus cae -noGUI Single_fibre_RVE.py
 
 
-
+# RVE dimensions
 fibre_diametre = 0.007 #mm #(7 micron)
 matrix_dimensions = 0.008 #mm
 extrude_depth = 0.008 #mm
+
+# Fibre properties
+Ef11 = 231E3 #MPa
+Ef22 = 13E3  #MPa
+Ef33 = Ef22
+vf12 = 0.3
+vf13 = 0.3
+vf23 = 0.46
+Gf12 = 11.3E3 #MPa
+Gf13 = Gf12   #MPa
+Gf23 = 4.45E3 #MPa
+alphaf11 = 0.1E-6 #/C
+alphaf22 = 22E-6 #/C
+alphaf33 = alphaf22 #/C
+
+# Matrix properties
+Em = 5070 #MPa
+vm = 0.35
+alpham = 48.5E-6
+
+# Mesh size 
+mesh_size = 0.0002
+
+inp_folder = 'inp/'
+inp_file = 'RVE_single_fibre' + '.inp'
+
+
+
 
 ########### CREATE FIBRE #################
 
@@ -61,15 +89,14 @@ a.InstanceFromBooleanMerge(name='Union_part', instances=(a.instances['Fibre-1'],
 
 mdb.models['Model-1'].Material(name='Fibre')
 mdb.models['Model-1'].materials['Fibre'].Elastic(type=ENGINEERING_CONSTANTS, 
-    table=((231000.0, 13000.0, 13000.0, 0.3, 0.3, 0.46, 11300.0, 11300.0, 
-    4450.0), ))
+    table=((Ef11, Ef22, Ef33, vf12, vf13, vf23, Gf12, Gf13, Gf23), ))
 mdb.models['Model-1'].materials['Fibre'].Expansion(type=ORTHOTROPIC, 
-    table=((1e-07, 2.2e-05, 2.2e-05), ))
+    table=((alphaf11, alphaf22, alphaf33), ))
 
 ################ ~~~~~~ Matrix ~~~~~~~~~ ##########################
 mdb.models['Model-1'].Material(name='Matrix')
-mdb.models['Model-1'].materials['Matrix'].Elastic(table=((5070.0, 0.35), ))
-mdb.models['Model-1'].materials['Matrix'].Expansion(table=((4.85e-05, ), ))
+mdb.models['Model-1'].materials['Matrix'].Elastic(table=((Em, vm), ))
+mdb.models['Model-1'].materials['Matrix'].Expansion(table=((alpham, ), ))
 mdb.models['Model-1'].materials['Matrix'].ConcreteDamagedPlasticity(table=((
     29.0, 0.1, 1.29, 1.0, 0.0001), ))
 mdb.models['Model-1'].materials['Matrix'].concreteDamagedPlasticity.ConcreteCompressionHardening(
@@ -201,7 +228,7 @@ p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 # p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
 
 p = mdb.models['Model-1'].parts['Union_part']
-p.seedPart(size=0.0005, deviationFactor=0.1, minSizeFactor=0.1)
+p.seedPart(size=mesh_size, deviationFactor=0.1, minSizeFactor=0.1)
 p.generateMesh()
 
 # ##################### Create surfaces #########################
@@ -251,7 +278,7 @@ mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial',
     maxNumInc=1000, stabilizationMagnitude=0.0002, 
     stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
     continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=0.1, 
-    minInc=1e-15, maxInc=1, nlgeom=ON
+    minInc=1e-15, maxInc=0.1, nlgeom=ON
     )
 
 mdb.models['Model-1'].steps['Step-1'].control.setValues(allowPropagation=OFF, 
@@ -274,9 +301,19 @@ mdb.Job(name='RVE_single_fibre', model='Model-1', description='',
     numGPUs=0)
 
 
-
-###################### Write inp file ##########################
+##################### Generate inp file and move to inp folder ###########################
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
+
+import os
+if not os.path.exists(inp_folder):
+    os.makedirs(inp_folder)
+
+import shutil
+if not os.path.exists(f'{inp_folder}{inp_file}'):
+    shutil.move(inp_file, inp_folder)
+else:
+    os.remove(f"{inp_folder}{inp_file}")
+    shutil.move(inp_file, inp_folder)
 
 ###################### PBC Surface Set ##########################
 from Find_opposite_nodes import *
@@ -452,15 +489,12 @@ for i in SurfaceNode:
 ##################### Generate inp file and move to inp folder ###########################
 mdb.jobs['RVE_single_fibre'].writeInput(consistencyChecking=OFF)
 
-inp_folder = 'inp/'
 import os
 if not os.path.exists(inp_folder):
     os.makedirs(inp_folder)
 
 import shutil
-inp_file = 'RVE_single_fibre' + '.inp'
-
-if not os.path.exists(inp_file):
+if not os.path.exists(f'{inp_folder}{inp_file}'):
     shutil.move(inp_file, inp_folder)
 else:
     os.remove(f"{inp_folder}{inp_file}")
@@ -469,21 +503,21 @@ else:
 
 
 ##################### Function Generate new .inp file with PBC and Disp_boundary included ##########################
-def generate_input_file(name):
-    Inputfile = open(f"{inp_folder}RVE_single_fibre.inp",'r')
+def generate_input_file(caseNo):
+    Inputfile = open(f"{inp_folder}{inp_file}",'r')
     rawdata = Inputfile.read()
     Inputfile.close()
     data = rawdata.split('\n')
     end_assembly_index = data.index('*End Assembly')
     output_field_index = data.index('** OUTPUT REQUESTS')
     #######################################################
-    writefile = open(f"{inp_folder}PBC_RVE_single_fibre_" + name + ".inp",'w')
+    writefile = open(f"{inp_folder}PBC_RVE_single_fibre_" + caseNo + ".inp",'w')
     for i in range (0,len(data)):
         if i == end_assembly_index:
             writefile.write("*INCLUDE, INPUT=PBC_input.txt \n")
             writefile.write(data[i] + "\n")
         elif i == output_field_index:
-            writefile.write("*INCLUDE, INPUT=Disp_Boundary_" + name + ".txt \n")
+            writefile.write("*INCLUDE, INPUT=Disp_Boundary_" + caseNo + ".txt \n")
             writefile.write(data[i] + "\n") 
         else:
             writefile.write(data[i] + "\n")
