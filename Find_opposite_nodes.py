@@ -5,7 +5,7 @@ Inputfile.close()
 data = rawdata.split('\n')
 
 start_node_index = data.index('*Node')+1
-end_node_index = data.index('*Element, type=C3D6')-1 #C3D8
+end_node_index = data.index('*Element, type=C3D6')-1 #C3D6
 #end_node_index = data.index('*Element, type=C3D8')-1 #C3D8
 end_assembly_index = data.index('*End Assembly')
 
@@ -32,22 +32,26 @@ FrontSet = []
 
 TotalNode = len(nodeNumber)
 
+maxX, minX = max(nodeX), min(nodeX)
+maxY, minY = max(nodeY), min(nodeY)
+maxZ, minZ = max(nodeZ), min(nodeZ)
+
 for i in range(0,TotalNode):
-    if nodeX[i] == max(nodeX) or nodeX[i] == min(nodeX) or nodeY[i] == max(nodeY) or nodeY[i] == min(nodeY) or nodeZ[i] == max(nodeZ) or nodeZ[i] == min(nodeZ):
+    if nodeX[i] == maxX or nodeX[i] == minX or nodeY[i] == maxY or nodeY[i] == minY or nodeZ[i] == maxZ or nodeZ[i] == minZ:
         SurfaceNode.append(i)
 
 for i in SurfaceNode:
-    if nodeY[i] == max(nodeY):
+    if nodeY[i] == maxY:
         TopSet.append(nodeNumber[i])  
-    elif nodeY[i] == min(nodeY):
+    elif nodeY[i] == minY:
         BotSet.append(nodeNumber[i])
-    elif nodeX[i] == max(nodeX):
+    elif nodeX[i] == maxX:
         RightSet.append(nodeNumber[i])
-    elif nodeX[i] == min(nodeX):
+    elif nodeX[i] == minX:
         LeftSet.append(nodeNumber[i])
-    elif nodeZ[i] == max(nodeZ):
+    elif nodeZ[i] == maxZ:
         FrontSet.append(nodeNumber[i])
-    elif nodeZ[i] == min(nodeZ):
+    elif nodeZ[i] == minZ:
         BackSet.append(nodeNumber[i])
     else:
         continue
@@ -72,32 +76,32 @@ RBedge = []
 
 for i in SurfaceNode:
     # Front
-    if ( nodeZ[i] == max(nodeZ) ) and ( nodeX[i] == min(nodeX) ):
+    if ( nodeZ[i] == maxZ ) and ( nodeX[i] == minX ):
         FLedge.append(nodeNumber[i])  
-    elif ( nodeZ[i] == max(nodeZ) ) and ( nodeX[i] == max(nodeX) ):
+    elif ( nodeZ[i] == maxZ ) and ( nodeX[i] == maxX ):
         FRedge.append(nodeNumber[i])
-    elif ( nodeZ[i] == max(nodeZ) ) and ( nodeY[i] == max(nodeY) ):
+    elif ( nodeZ[i] == maxZ ) and ( nodeY[i] == maxY ):
         FTedge.append(nodeNumber[i])
-    elif ( nodeZ[i] == max(nodeZ) ) and ( nodeY[i] == min(nodeY) ):
+    elif ( nodeZ[i] == maxZ ) and ( nodeY[i] == minY ):
         FBedge.append(nodeNumber[i])
     # Back 
-    elif ( nodeZ[i] == min(nodeZ) ) and ( nodeX[i] == min(nodeX) ):
+    elif ( nodeZ[i] == minZ ) and ( nodeX[i] == minX ):
         BLedge.append(nodeNumber[i])  
-    elif ( nodeZ[i] == min(nodeZ) ) and ( nodeX[i] == max(nodeX) ):
+    elif ( nodeZ[i] == minZ ) and ( nodeX[i] == maxX ):
         BRedge.append(nodeNumber[i])
-    elif ( nodeZ[i] == min(nodeZ) ) and ( nodeY[i] == max(nodeY) ):
+    elif ( nodeZ[i] == minZ ) and ( nodeY[i] == maxY ):
         BTedge.append(nodeNumber[i])
-    elif ( nodeZ[i] == min(nodeZ) ) and ( nodeY[i] == min(nodeY) ):
+    elif ( nodeZ[i] == minZ ) and ( nodeY[i] == minY ):
         BBedge.append(nodeNumber[i])
     # Right 
-    elif ( nodeX[i] == max(nodeX) ) and ( nodeY[i] == max(nodeY) ):
+    elif ( nodeX[i] == maxX ) and ( nodeY[i] == maxY ):
         RTedge.append(nodeNumber[i])  
-    elif ( nodeX[i] == max(nodeX) ) and ( nodeY[i] == min(nodeY) ):
+    elif ( nodeX[i] == maxX ) and ( nodeY[i] == minY ):
         RBedge.append(nodeNumber[i])
     # Left
-    elif ( nodeX[i] == min(nodeX) ) and ( nodeY[i] == max(nodeY) ):
+    elif ( nodeX[i] == minX ) and ( nodeY[i] == maxY ):
         LTedge.append(nodeNumber[i])  
-    elif ( nodeX[i] == min(nodeX) ) and ( nodeY[i] == min(nodeY) ):
+    elif ( nodeX[i] == minX ) and ( nodeY[i] == minY ):
         LBedge.append(nodeNumber[i])
     else:
         continue
@@ -114,22 +118,22 @@ C8 = []
 
 for i in SurfaceNode:
     # Front 
-    if ( nodeX[i] == min(nodeX) ) and ( nodeY[i] == max(nodeY) ) and ( nodeZ[i] == max(nodeZ) ):
+    if ( nodeX[i] == minX ) and ( nodeY[i] == maxY ) and ( nodeZ[i] == maxZ ):
         C1.append(nodeNumber[i])
-    elif ( nodeX[i] == max(nodeX) ) and ( nodeY[i] == max(nodeY) ) and ( nodeZ[i] == max(nodeZ) ):
+    elif ( nodeX[i] == maxX ) and ( nodeY[i] == maxY ) and ( nodeZ[i] == maxZ ):
         C2.append(nodeNumber[i])
-    elif ( nodeX[i] == max(nodeX) ) and ( nodeY[i] == min(nodeY) ) and ( nodeZ[i] == max(nodeZ) ):
+    elif ( nodeX[i] == maxX ) and ( nodeY[i] == minY ) and ( nodeZ[i] == maxZ ):
         C6.append(nodeNumber[i])
-    elif ( nodeX[i] == min(nodeX) ) and ( nodeY[i] == min(nodeY) ) and ( nodeZ[i] == max(nodeZ) ):
+    elif ( nodeX[i] == minX ) and ( nodeY[i] == minY ) and ( nodeZ[i] == maxZ ):
         C5.append(nodeNumber[i])
     # Back
-    elif ( nodeX[i] == min(nodeX) ) and ( nodeY[i] == max(nodeY) ) and ( nodeZ[i] == min(nodeZ) ):
+    elif ( nodeX[i] == minX ) and ( nodeY[i] == maxY ) and ( nodeZ[i] == minZ ):
         C4.append(nodeNumber[i])
-    elif ( nodeX[i] == max(nodeX) ) and ( nodeY[i] == max(nodeY) ) and ( nodeZ[i] == min(nodeZ) ):
+    elif ( nodeX[i] == maxX ) and ( nodeY[i] == maxY ) and ( nodeZ[i] == minZ ):
         C3.append(nodeNumber[i])
-    elif ( nodeX[i] == max(nodeX) ) and ( nodeY[i] == min(nodeY) ) and ( nodeZ[i] == min(nodeZ) ):
+    elif ( nodeX[i] == maxX ) and ( nodeY[i] == minY ) and ( nodeZ[i] == minZ ):
         C7.append(nodeNumber[i])
-    elif ( nodeX[i] == min(nodeX) ) and ( nodeY[i] == min(nodeY) ) and ( nodeZ[i] == min(nodeZ) ):
+    elif ( nodeX[i] == minX ) and ( nodeY[i] == minY ) and ( nodeZ[i] == minZ ):
         C8.append(nodeNumber[i])
     else:
         continue
@@ -324,16 +328,15 @@ for i in range (0,len(FREdge)):
 
 
 RP1coord = []           #Back   -E11
-RP1coord.append([0, 0, min(nodeZ)])
+RP1coord.append([0, 0, minZ])
 RP2coord = []           #Bot    -E22
-RP2coord.append([0, min(nodeY), max(nodeZ)/2])
+RP2coord.append([0, minY, maxZ/2])
 RP3coord = []           #Right  -E33
-RP3coord.append([min(nodeX), 0, max(nodeZ)/2])
+RP3coord.append([minX, 0, maxZ/2])
 
 RP4coord = []           #Front  E11
-RP4coord.append([0, 0, max(nodeZ)])
+RP4coord.append([0, 0, maxZ])
 RP5coord = []           #Top    E22
-RP5coord.append([0, max(nodeY), max(nodeZ)/2])
+RP5coord.append([0, maxY, maxZ/2])
 RP6coord = []           #Left   E33
-RP6coord.append([max(nodeX), 0, max(nodeZ)/2])
-
+RP6coord.append([maxX, 0, maxZ/2])
