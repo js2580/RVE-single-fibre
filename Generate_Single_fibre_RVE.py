@@ -4,6 +4,7 @@ from caeModules import *
 from driverUtils import executeOnCaeStartup
 
 #abaqus cae -noGUI Single_fibre_RVE.py
+session.journalOptions.setValues(replayGeometry=COORDINATE, recoverGeometry=COORDINATE)
 
 
 # RVE dimensions
@@ -28,15 +29,20 @@ alphaf33 = alphaf22 #/C
 # Matrix properties
 Em = 5070 #MPa
 vm = 0.35
-alpham = 48.5E-6
+alpham = 48.5E-6 #/C
 
-# Mesh size 
-mesh_size = 0.0002
+# Mesh sizes
+mesh_global_size = 0.0003
+mesh_fibre_size = 0.00015
 
 inp_folder = 'inp/'
 inp_file = 'RVE_single_fibre' + '.inp'
 
-
+# Step sizes
+maxNumInc = 1000
+initialInc = 0.1
+minInc = 1e-15
+maxInc = 0.1
 
 
 ########### CREATE FIBRE #################
@@ -203,6 +209,11 @@ pickedRegions = c.getSequenceFromMask(mask=('[#1 ]', ), )
 p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 #p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
 
+p = mdb.models['Model-1'].parts['Union_part']
+e = p.edges
+pickedEdges = e.findAt(((0.0, fibre_diametre/2, 0), ))
+p.seedEdgeBySize(edges=pickedEdges, size=mesh_fibre_size, deviationFactor=0.1, 
+    constraint=FINER)
 ######## MATRIX 
 
 p = mdb.models['Model-1'].parts['Union_part']
@@ -228,7 +239,7 @@ p.setMeshControls(regions=pickedRegions, elemShape=WEDGE)
 # p.setMeshControls(regions=pickedRegions, algorithm=MEDIAL_AXIS)
 
 p = mdb.models['Model-1'].parts['Union_part']
-p.seedPart(size=mesh_size, deviationFactor=0.1, minSizeFactor=0.1)
+p.seedPart(size=mesh_global_size, deviationFactor=0.1, minSizeFactor=0.1)
 p.generateMesh()
 
 # ##################### Create surfaces #########################
@@ -281,6 +292,13 @@ mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial',
     minInc=1e-15, maxInc=0.1, nlgeom=ON
     )
 
+mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial', 
+    maxNumInc=maxNumInc, stabilizationMagnitude=0.0002, 
+    stabilizationMethod=DISSIPATED_ENERGY_FRACTION, 
+    continueDampingFactors=False, adaptiveDampingRatio=0.05, initialInc=initialInc, 
+    minInc=minInc, maxInc=maxInc, nlgeom=ON
+    )
+
 mdb.models['Model-1'].steps['Step-1'].control.setValues(allowPropagation=OFF, 
     resetDefaultValues=OFF, timeIncrementation=(20.0, 40.0, 9.0, 16.0, 10.0, 
     4.0, 12.0, 10.0, 6.0, 3.0, 50.0))
@@ -288,7 +306,7 @@ mdb.models['Model-1'].steps['Step-1'].control.setValues(allowPropagation=OFF,
 
 mdb.models['Model-1'].fieldOutputRequests['F-Output-1'].setValues(
     variables=('S', 'PE', 'PEEQ', 'PEMAG', 'LE', 'U', 'RF', 'CF', 'CSTRESS', 
-    'CDISP', 'IVOL','ENER'))
+    'CDISP', 'IVOL','ENER', 'NT', 'TEMP'))
 
 ###################### Create inp file ##########################
 
@@ -527,9 +545,3 @@ def generate_input_file(caseNo):
 ###################### Generate new input files with different boundary conditions ##########################
 for i in range (1,10):
     generate_input_file("case" + str(i))
-
-
-
-
-
-
